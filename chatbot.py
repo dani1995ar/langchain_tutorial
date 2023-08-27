@@ -25,41 +25,41 @@ text_splitter = RecursiveCharacterTextSplitter(
 splitted_text = loader.load_and_split(text_splitter=text_splitter)
 
 
-# Load documents into vector database. the document has to be embeded first,
+# Load documents into vector database. The document has to be embedded first,
 # which takes the document and passes it to a vector, to do this we need to
-# use the Embeddings class provided by langchain, and we also need to specify
+# use the Embeddings class provided by LangChain, and we also need to specify
 # which embedding model provider we will use, and ensure our query (input)
-# also is embeded using the same model, otherwise we won't obtain meaningful
+# also is embedded using the same model, otherwise we won't obtain meaningful
 # results from querying the data, since the query and the document are
 # passed to a multidimensional vector, and then we try to calculate the
-# similarity of the embeded query against the embeded document (similar
-# to euclidian distance but with a multidimensional vector of floating
+# similarity of the embedded query against the embedded document (similar
+# to Euclidian distance but with a multidimensional vector of floating
 # point numbers) we use the closest vectors to provide a response. Because we
 # are building a chatbot using free resources we must use the package
-# sentence_transformer and then use a model from huggingface:
+# sentence_transformer and then use a model from hugging face:
 # https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
-# this model will embed both the document and the query
+# This model will embed both the document and the query
 embeddings = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2",
 )
 
 
-# The below is for when de DB hasn't been created, since we already processed
+# The below is for when the DB hasn't been created since we already processed
 # the API document and the vector db is saved locally we can instantiate a
 # Chroma object directly and load the DB instead
 db = Chroma.from_documents(
     splitted_text,
     embeddings,
-    persist_directory=".chromadb/",
+    persist_directory="chromadb/",
     collection_name="langchain_test_collection",
     verbose=True,
 )
 
 
-# the bellow is to just load the already existing DB
+# The bellow is just to load the already existing DB
 # db = Chroma(
 #     collection_name="api_functions_signatures_and_docstrings",
-#     persist_directory=".chromadb/",
+#     persist_directory="chromadb/",
 #     embedding_function=embeddings,
 # )
 
